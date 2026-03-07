@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aleksandra Milcheva — Anduril Application</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Serif:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #0f1218;
+    --ink-mid:    #2c3340;
+    --ink-light:  #5a6472;
+    --ink-faint:  #8a9198;
+    --paper:      #faf8f4;
+    --paper-warm: #f2ede4;
+    --paper-cool: #eef2f7;
+    --paper-sage: #eef4ee;
+    --paper-dusk: #f0edf6;
+    --amber:      #b86c00;
+    --amber-bg:   #fff8ee;
+    --rule:       #d4cfc8;
+    --rule-dark:  #a8a096;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  /* ── PAGE WRAPPER ── */
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    border-bottom: 1px solid var(--rule);
+    padding: 56px 0 40px;
+    margin-bottom: 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 40px;
+  }
+
+  .header-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--amber);
+    display: inline-block;
+  }
+
+  .site-header h1 {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: clamp(26px, 3.5vw, 42px);
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .site-header h1 strong {
+    font-weight: 500;
+  }
+
+  .header-meta {
+    text-align: right;
+    padding-bottom: 4px;
+  }
+
+  .header-meta .meta-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 5px;
+  }
+
+  .header-meta .meta-role {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .header-meta .meta-contact {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-light);
+    margin-top: 6px;
+    line-height: 1.7;
+  }
+
+  /* ── THESIS ── */
+  .thesis {
+    background: var(--amber-bg);
+    border-left: 3px solid var(--amber);
+    padding: 24px 28px;
+    margin-bottom: 48px;
+    max-width: 900px;
+  }
+
+  .thesis-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 10px;
+  }
+
+  .thesis p {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--ink-mid);
+    font-weight: 300;
+  }
+
+  .thesis p strong {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* ── COLUMN HEADERS ── */
+  .col-headers {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 1.4fr;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 10px;
+    margin-bottom: 2px;
+  }
+
+  .col-header {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    padding: 0 16px 0 0;
+  }
+
+  .col-header:first-child { color: var(--amber); }
+
+  /* ── MATRIX ROWS ── */
+  .matrix-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 1.4fr;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .matrix-row.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .matrix-row:hover .cell-problem {
+    border-left: 3px solid var(--amber);
+  }
+
+  .cell {
+    padding: 28px 20px 28px 0;
+    border-right: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  .cell:last-child { border-right: none; padding-right: 0; }
+  .cell:first-child { padding-left: 0; }
+
+  /* Problem cell */
+  .cell-problem {
+    padding-left: 3px;
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+
+  .problem-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--amber);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .problem-title {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .problem-subtitle {
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--ink-light);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  /* Requirement cell */
+  .cell-req {
+    padding-left: 20px;
+  }
+
+  .cell-req p {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--ink-mid);
+    font-weight: 300;
+  }
+
+  /* Motivation cell */
+  .cell-motiv {
+    padding-left: 20px;
+  }
+
+  .cell-motiv p {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--ink-mid);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  /* Evidence cell */
+  .cell-evid {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .cell-evid ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .cell-evid ul li {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--ink-mid);
+    font-weight: 300;
+  }
+
+  .cell-evid ul li::before {
+    content: '✦';
+    color: #4a7a52;
+    font-size: 8px;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .cell-evid ul li strong {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* ── ROW BACKGROUNDS (alternating) ── */
+  .matrix-row:nth-child(odd)  .cell-req  { background: var(--paper-cool); }
+  .matrix-row:nth-child(even) .cell-req  { background: #e8f0f7; }
+  .matrix-row:nth-child(odd)  .cell-motiv { background: var(--paper-dusk); }
+  .matrix-row:nth-child(even) .cell-motiv { background: #e8e2f2; }
+  .matrix-row:nth-child(odd)  .cell-evid { background: var(--paper-sage); }
+  .matrix-row:nth-child(even) .cell-evid { background: #e4f0e4; }
+
+  /* ── FOOTER ── */
+  .site-footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .site-footer .footer-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .site-footer .footer-contact {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faint);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .page { padding: 0 20px 60px; }
+    .col-headers,
+    .matrix-row { grid-template-columns: 1fr; }
+    .col-header { display: none; }
+    .col-header:first-child { display: block; }
+    .cell { border-right: none; padding: 16px 0; border-bottom: 1px dashed var(--rule); }
+    .cell:last-child { border-bottom: none; }
+    .site-header { grid-template-columns: 1fr; }
+    .header-meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="site-header">
+    <div>
+      <div class="header-eyebrow">Application Document · March 2026</div>
+      <h1>Why This Role.<br><strong>Why Now. Why Me.</strong></h1>
+    </div>
+    <div class="header-meta">
+      <div class="meta-label">Applying for</div>
+      <div class="meta-role">Infrastructure Strategy & Operations<br>Anduril Industries · Costa Mesa, CA</div>
+      <div class="meta-contact">
+        Aleksandra Milcheva<br>
+        <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="47062b222c342629233526690a2e2b242f223126073735283328292a262e2b6924282a">[email&#160;protected]</a><br>
+        +1 (757) 515-9934 · Norfolk, VA<br>
+        U.S. Person (Lawful Permanent Resident)
+      </div>
+    </div>
+  </header>
+
+  <div class="thesis">
+    <div class="thesis-label">Framing Thesis</div>
+    <p>Anduril's competitive edge is not just its technology — it is the <strong>speed at which it moves from concept to production</strong>. That speed is physically constrained by infrastructure: factories that don't exist yet, labs that need to be stood up in months not years, secure spaces that must work on day one. The Infrastructure Strategy & Operations role exists to <strong>eliminate that constraint</strong>. It is an operations and analytical problem: how do you build a decision-making and execution engine that keeps physical infrastructure from becoming the bottleneck in a product-driven defense company? That is the problem I want to work on — and the matrix below maps why I am positioned to do it.</p>
+  </div>
+
+  <div class="col-headers">
+    <div class="col-header">Core Problem</div>
+    <div class="col-header">Role Requirement</div>
+    <div class="col-header">Motivation & Fit</div>
+    <div class="col-header">Evidence</div>
+  </div>
+
+  <!-- ROW 1 -->
+  <div class="matrix-row">
+    <div class="cell cell-problem">
+      <span class="problem-number">01</span>
+      <div class="problem-title">Speed to Operational Readiness</div>
+      <div class="problem-subtitle">Traditional defense institutions are not built for speed or operational efficiency. This role is part of building the model that is.</div>
+    </div>
+    <div class="cell cell-req">
+      <p>Results-oriented coordinator who guarantees production teams have everything they need on day one — drives punchlists to zero, integrates physical security, network engineering, and facilities, and executes on short timelines without waiting for a perfect brief.</p>
+    </div>
+    <div class="cell cell-motiv">
+      <p>My career has been inside institutions where process and systems are not built for speed or operational efficiency. I have seen firsthand how that slows military adaptation in an era of fast innovation cycles. Anduril is one of the few organizations genuinely attempting to build that capability from scratch — figuring out what speed and operational efficiency actually look like in defense production. That is the problem I want to be working on.</p>
+    </div>
+    <div class="cell cell-evid">
+      <ul>
+        <li><strong>Parliamentary campaign (2021):</strong> entered a region with no prior political presence, no budget, no party support — 1 month to campaign. Ran demographic analysis on public election data, media scan, and incumbent MP performance audit to identify highest-leverage target segments. Built targeted engagement plan that focused a volunteer team's limited resources — won a seat in the 47th National Assembly.</li>
+        <li><strong>Richemont:</strong> delivered new cyber risk platform on time and on budget — complex build across globally dispersed, semi-autonomous organization of 30,000+ employees, mid-COVID. First-ever real-time risk visibility at corporate and project level. Recognized with raise and bonus.</li>
+        <li><strong>Richemont Cyber Ambassador Program:</strong> event attendance doubled within 6 months of launch; employees began applying proactively to join — zero top-down mandate.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ROW 2 -->
+  <div class="matrix-row">
+    <div class="cell cell-problem">
+      <span class="problem-number">02</span>
+      <div class="problem-title">Decision Quality Under Ambiguity</div>
+      <div class="problem-subtitle">No template, high stakes, short timelines. The value is in structuring the problem before solving it.</div>
+    </div>
+    <div class="cell cell-req">
+      <p>Sharp analytical mind who can execute financial and design analyses on short timelines, build scalable dashboards and reporting tools, and translate complex multi-source data into decision-ready outputs for senior leadership — without a playbook.</p>
+    </div>
+    <div class="cell cell-motiv">
+      <p>The work I find most meaningful is not solving a well-defined problem efficiently — it is structuring a problem that no one has structured before. The frameworks that come out of that kind of work tend to be the ones that actually stick.</p>
+    </div>
+    <div class="cell cell-evid">
+      <ul>
+        <li><strong>Bulgarian Presidency:</strong> managed allocation strategy for EUR 350M in EU structural funds → 10,000+ SMEs financed; produced decision memos for head-of-state review.</li>
+        <li><strong>Mastercard Foundation / RAF, Nairobi (2017):</strong> 3-month assignment, broad brief, no supervision — reframed the problem from financial to operational; designed and delivered a digital vetted-provider database rolled out to full MFI network, enabling MFIs to scale without expanding overhead.</li>
+        <li><strong>Richemont:</strong> co-developed quantitative FAIR × NIST CSF cyber risk model to replace qualitative, fragmented approach; output used to drive capital allocation decisions across 30,000+ employee global portfolio.</li>
+        <li><strong>Harvard Belfer:</strong> co-authored National Counter-Information Operations Strategy; supported former US Assistant Secretary of Defense for Cybersecurity.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ROW 3 -->
+  <div class="matrix-row">
+    <div class="cell cell-problem">
+      <span class="problem-number">03</span>
+      <div class="problem-title">Stakeholder Convergence at Scale</div>
+      <div class="problem-subtitle">Construction projects touch every function simultaneously. The role is the connective tissue that keeps them moving.</div>
+    </div>
+    <div class="cell cell-req">
+      <p>Confident convener who leads large cross-functional meetings, manages complex stakeholder groups across production, finance, engineering, and facilities, and produces decision-ready briefings for senior executives — turning competing priorities into forward movement.</p>
+    </div>
+    <div class="cell cell-motiv">
+      <p>Getting people with opposing interests to move in the same direction — across cultures, institutions, and time zones — is the part of the work I find most energizing, not the part I tolerate to get to the real work.</p>
+    </div>
+    <div class="cell cell-evid">
+      <ul>
+        <li><strong>Bulgarian Parliament (2021–22):</strong> led 4-party coalition negotiation on remit of new Ministry of E-Government — mapped stakeholder power and red lines, developed compromise options, secured party leadership approval, built cross-party consensus. Law passed; Ministry became operational.</li>
+        <li><strong>Richemont platform:</strong> acted as bridge across 4 distinct communities (data scientists, external developers, project managers, Cyber Risk Director) with conflicting priorities — delivered shared platform on time and on budget.</li>
+        <li><strong>NATO NCIO:</strong> managed ASB Finance and Audit Committee annual cycle across 32 Allied nations — from competing national interests to agreed decisions, every cycle.</li>
+        <li><strong>Harvard Belfer:</strong> led US-China Cyber Security WG tabletop with senior government and private sector executives (State Dept., DOD, Fortune 500) — competing interests, fixed outcome.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ROW 4 -->
+  <div class="matrix-row">
+    <div class="cell cell-problem">
+      <span class="problem-number">04</span>
+      <div class="problem-title">Scalable Process & Systems Build</div>
+      <div class="problem-subtitle">A fast-scaling organization breaks ad hoc processes quickly. The highest-leverage work is building systems that make good decisions automatic.</div>
+    </div>
+    <div class="cell cell-req">
+      <p>Operator and builder who designs standards, approval flows, and financial dashboards; develops fluency in real estate and construction software; and creates analytical tools that equip functional teams to measure and improve their own processes at scale.</p>
+    </div>
+    <div class="cell cell-motiv">
+      <p>The highest-leverage contribution in a fast-scaling organization is not making the next good decision — it is building the system that makes good decisions automatic. That is the kind of work I want to be doing.</p>
+    </div>
+    <div class="cell cell-evid">
+      <ul>
+        <li><strong>Richemont:</strong> co-designed automated FAIR-based risk assessment platform from scratch — 4-stakeholder build (data scientists, developers, project managers, risk leadership); delivered on schedule and budget; replaced manual fragmented process with first-ever real-time corporate and project-level risk visibility across 30,000+ employee organization.</li>
+        <li><strong>Harvard Kennedy School:</strong> introduced lightweight real-time student feedback system for MPP class (3 questions, 5 minutes, anonymous) — participation reached ~100%; class received exceptionally high satisfaction rating and was added to HKS core MPP curriculum.</li>
+        <li><strong>NATO ACT:</strong> built reusable data architecture for resilience analytical framework — designed to be case-study agnostic and analyst-independent from day one.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ROW 5 -->
+  <div class="matrix-row">
+    <div class="cell cell-problem">
+      <span class="problem-number">05</span>
+      <div class="problem-title">Mission Literacy</div>
+      <div class="problem-subtitle">Infrastructure decisions must serve operational realities. That requires understanding what warfighters and production teams actually need — not just what the contract says.</div>
+    </div>
+    <div class="cell cell-req">
+      <p>Someone who understands what warfighters and production teams actually need from infrastructure — not just what the contract says — and who can learn Anduril's business top-to-bottom to ensure facilities decisions serve operational realities.</p>
+    </div>
+    <div class="cell cell-motiv">
+      <p>A decade spent working on defense transformation from the inside of NATO, parliament, and policy has given me a clear view of what the shift from cost-plus procurement to product-driven defense production requires — and of where that shift is actually happening. I want to be inside the organization making it real, working alongside people who drive a vision through execution all the way to delivered value. This is a deliberate and well-considered career pivot.</p>
+    </div>
+    <div class="cell cell-evid">
+      <ul>
+        <li><strong>Bulgarian Presidency + BVCA (co-founded 2015):</strong> when government sought to dismantle market-based EU fund allocation model, co-founded industry body to defend private sector governance principles — succeeded in embedding independent oversight and partial private fund management into final law.</li>
+        <li><strong>NATO ACT (current):</strong> develop military resilience concepts tied directly to operational requirements — understands infrastructure dependencies and why build timelines are non-negotiable from a warfighter's perspective.</li>
+        <li><strong>Bulgarian Parliament:</strong> legislated on EU Cyber Resilience Act, NIS2, DSA, DMA — understands the regulatory and strategic environment Anduril's customers and partners operate in.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-name">Aleksandra Milcheva · March 2026</div>
+    <div class="footer-contact">
+      <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="71301d141a02101f1503105f3c181d12191407103101031e051e1f1c10181d5f121e1c">[email&#160;protected]</a> · +1 (757) 515-9934
+    </div>
+  </footer>
+
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Staggered scroll reveal
+  const rows = document.querySelecto
